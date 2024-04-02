@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "trans-knowledge",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -28,9 +28,9 @@
   "scripts": {
     "dev": "",
     "test": "",
-	"milestone-01": "http-server src/docs/milestone-01 -p 3000 -c-1 -o -s”,
+	"milestone-01": "http-server src/docs/milestone-01 -p 3000 -c-1 -o -s",
 	"validate-html": "html-validate src/**/*.html",
-	"prettier": "prettier src —write”
+	"prettier": "prettier src —write"
   },
   "devDependencies": {
     "html-validate": "^8.18.1",
