@@ -1,0 +1,21 @@
+body {
+    margin: 40px auto;
+    max-width: 650px;
+    text-align: center;
+    background-color: #eeeeee;
+    font: sans-serif;
+}
+
+article {
+    outline: solid thin lightblue;
+    line-height: 1.4;
+}
+
+h2 {
+    font: sans-serif;
+    line-height: 1.2;
+}
+
+p {
+    color:#444
+}
