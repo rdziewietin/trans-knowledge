@@ -1,21 +1,67 @@
+nav{
+    margin: 16px auto;
+}
+
 body {
     margin: 40px auto;
-    max-width: 650px;
+    max-width: 45%;
     text-align: center;
     background-color: #eeeeee;
-    font: sans-serif;
+    font-family: sans-serif;
 }
 
 article {
     outline: solid thin lightblue;
     line-height: 1.4;
+    margin: 16px auto;
 }
 
 h2 {
     font: sans-serif;
     line-height: 1.2;
+    font-size: 26px; 
 }
 
 p {
-    color:#444
+    color: #444;
+    /* padding: 0px;
+    overflow: hidden;
+    max-height: 0px; */
+    padding: 8px;
+    transition: all 0.2s ease-out;
+    margin: 0;
+}
+
+#team {
+    outline: solid thin lightcoral;
+    background-color: pink;
+}
+
+header {
+    outline: solid thin cornflowerblue;
+    background-color: lightblue;
+}
+
+nav {
+    background-color: lightblue;
+}
+
+.tab:hover {
+    background-color: #dddddd;
+}
+
+.tab {
+    margin: 0px auto;
+    width: 100%;
+    padding: 0;
+    outline: none;
+    border: none;
+    outline: none;
+    border-radius: 0;
+    background-color: #eeeeee;
+    cursor: pointer;
+    & > h2 {
+        line-height: 0;
+        font-weight: none;
+    }
 }
