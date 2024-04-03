@@ -36,11 +36,15 @@ article {
     line-height: 1.4;
     margin: 16px auto;
     max-width: 45%;
+    & > p {
+        margin: 0;
+        display: none;
+    }
 }
 
 .header {
     display: grid;
-    grid-template-columns: 1fr 9fr;
+    grid-template-columns: 1fr 8fr 1fr;
 }
 
 h2 {
@@ -51,16 +55,24 @@ h2 {
 
 p {
     color: #444;
+    padding: 16px;
+}
+
+figcaption {
+    color: #444;
     padding: 8px;
-    transition: all 0.2s ease-out;
     margin: 0;
-    display: none;
 }
 
 #team {
-    background-color: #eeeeee;
-    max-width: 45%;
-    margin: 16px auto;
+    background-color: #55cefd;
+    max-width: 20%;
+    margin: 40px auto;
+    outline: solid thin cornflowerblue;
+    & > p {
+        padding: 4px;
+        margin: 8px;
+    }
 }
 
 .tab:hover {
@@ -69,6 +81,7 @@ p {
 
 .tab {
     margin: 0px 0px;
+    flex: 1;
     padding: 0;
     /* outline: solid thin lightblue; */
     border: none;
@@ -77,12 +90,19 @@ p {
     font-family: sans-serif;
 }
 
-.tab-team {
-    margin: 0px 0px;
-    padding: 0;
-    /* outline: solid thin lightblue; */
-    border: none;
-    background-color: #eeeeee;
-    cursor: pointer;
-    font-family: sans-serif;
+footer {
+    height: 40px;
+    width: 100%;
+    bottom: 0;
+    background-color: #f6aab7;
+    margin: 0;
+    padding-bottom: 9px;
+    outline: solid thin lightcoral;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+img {
+    outline: solid medium #f6aab7;
 }
