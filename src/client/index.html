@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Title</title>
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- JavaScript Files -->
+    <script type="module" src="views.js" defer></script>
+    <script type="module" src="main.js" defer></script>
+    <script type="module" src="news.js" defer></script>
+  </head>
+  <body>
+    <header id="vision">
+      <!-- Navigation bar, logo, etc. -->
+      <h1>TransKnowledge</h1>
+    </header>
+
+    <nav>
+      <!-- Links to different sections/pages -->
+      <button id="home">Home</button>
+      <button id="map">Map</button>
+      <button id="news">News</button>
+      <button id="forum">Forum</button>
+      <button id="resources">Resources</button>
+    </nav>
+
+    <main>
+      <!-- Main content of the document -->   
+      <div id="views">
+        
+        <div id="home-view" class="view">
+          <p>Ah, what do he know?</p>
+        </div>
+
+        <div id="map-view" class="view" style="display:none">
+          <p>About the buttery flow.</p>
+          <div class="image">
+            <img usemap="#us-map" src="./us.png">
+            <map name="us-map">
+              <!-- Before areaing, decide if cropping map -->
+              <area shape="poly" coords="384,230,488,237,486,316,375,309">
+            </map>
+          </div>
+        </div>
+
+        <div id="news-view" class="view" style="display:none">
+          <h2 id="news-header">Select news </h2>
+          <div id="news-holder"></div>
+        </div>
+
+        
+
+        <div id="forum-view" class="view" style="display:none">
+          <p>Trippin'.</p>
+          <label for="comment">Say something: </label><input type="text" id="comment" />
+          <div>
+            
+          </div>
+        </div>
+
+        <div id="resources-view" class="view" style="display:none">
+          <p>To date the Metal Fellow been rippin' flows.</p>
+        </div>
+      </div>
+
+      <div id="news-sidebar" class="sidebar">
+        <button id="positive">Positive</button>
+        <button id="neutral">Neutral</button>
+        <button id="negative">Negative</button>
+        <label for="load-filter">Load custom filter: </label><input type="text" id="load-filter" />
+        <button id="load-button">Load</button>
+        <label for="new-filter">New custom filter: </label><input type="text" id="new-filter" />
+        <button id="new-button">Create</button>
+      </div>
+
+    </main>
+
+  </body>
+</html>
