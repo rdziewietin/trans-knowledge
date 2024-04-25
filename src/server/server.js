@@ -99,7 +99,7 @@ async function readFeed(response, name) {
   try {
     const feed = await db.loadFeed(name);
     response.writeHead(200, headerFields);
-    response.write(`<h2>Feed ${feed._id} = ${feed.count}</h2>`);
+    response.write(`<h2>${feed._id}</h2>`);
     response.end();
   } catch (err) {
     response.writeHead(404, headerFields);
@@ -128,7 +128,6 @@ async function readFeed(response, name) {
 async function updateFeed(response, name) {
   try {
     const feed = await db.loadFeed(name);
-    feed.count++;
     await db.modifyFeed(feed);
     response.writeHead(200, headerFields);
     response.write(`<h2>Feed ${feed._id} Updated</h2>`);
@@ -203,6 +202,8 @@ async function deleteFeed(response, name) {
 async function basicServer(request, response) {
   const options = url.parse(request.url, true).query;
 
+  console.log(request.url);
+
   // Check if the request method and path are equal to the given method and path
   const isEqual = (method, path) =>
     request.method === method && request.url === path;
@@ -276,7 +277,7 @@ async function basicServer(request, response) {
     isEqual("GET", "/client/index.html") ||
     isEqual("GET", "/index.html")
   ) {
-    sendStaticFile("/index.html");
+    sendStaticFile("/client/index.html");
     return;
   }
 

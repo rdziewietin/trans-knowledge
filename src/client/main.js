@@ -1,5 +1,6 @@
 import * as views from "./views.js";
 import * as news from "./article.js";
+import * as resources from "./resources.js"
 
 // Test articles
 const allArticles = new Map();
@@ -12,7 +13,12 @@ allArticles.set(newsNeutTest, "Neutral");
 const newsNegTest = new news.Article("Fox News", "Trans People Bad", "Trans people don't deserve to live.", "https://en.wikipedia.org/wiki/Hate_crime");
 allArticles.set(newsNegTest, "Negative");
 
-function renderAll(map, leaning, container){
+// Test comments
+const allComments = [];
+const commentTest = new resources.Resource("Hi :3", "default");
+allComments.push(commentTest);
+
+function renderAllArticles(map, leaning, container){
   document.getElementById("news-header").innerText = leaning;
   container.innerHTML = "";
   map.forEach((value, article) =>{
@@ -23,18 +29,28 @@ function renderAll(map, leaning, container){
   )
 }
 
+function renderAllComments(list, container){
+  container.innerHTML = "";
+  for (let comment in list){
+    if (list[comment].category === "default"){
+      list[comment].render(container);
+    }
+  }
+}
+
 // Constants
 const newsHolder = document.getElementById("news-holder");
+const commentHolder = document.getElementById("comment-holder");
 
 // Event listeners
 document.getElementById("home").addEventListener("click", () => views.load("home"));
 document.getElementById("map").addEventListener("click", () => views.load("map"));
 document.getElementById("news").addEventListener("click", () => views.load("news"));
-document.getElementById("forum").addEventListener("click", () => views.load("forum"));
+document.getElementById("forum").addEventListener("click", () => {views.load("forum"); renderAllComments(allComments, commentHolder)});
 document.getElementById("resources").addEventListener("click", () => views.load("resources"));
-document.getElementById("positive").addEventListener("click", () => renderAll(allArticles, "Positive", newsHolder));
-document.getElementById("neutral").addEventListener("click", () => renderAll(allArticles, "Neutral", newsHolder));
-document.getElementById("negative").addEventListener("click", () => renderAll(allArticles, "Negative", newsHolder));
+document.getElementById("positive").addEventListener("click", () => renderAllArticles(allArticles, "Positive", newsHolder));
+document.getElementById("neutral").addEventListener("click", () => renderAllArticles(allArticles, "Neutral", newsHolder));
+document.getElementById("negative").addEventListener("click", () => renderAllArticles(allArticles, "Negative", newsHolder));
 
 // Initialize with the home view
 views.load("home");

@@ -148,7 +148,7 @@ area {
   /* margin: 16px auto 16px 8px; */
   display: grid;
   grid-template-columns: 1fr;
-  width: 55%;
+  /* width: 55%; */
   & > button {
     margin: 8px;
   }
