@@ -1,5 +1,5 @@
 import * as views from "./views.js";
-import * as news from "./news.js";
+import * as news from "./article.js";
 
 // Test articles
 const allArticles = new Map();

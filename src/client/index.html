@@ -9,7 +9,8 @@
     <!-- JavaScript Files -->
     <script type="module" src="views.js" defer></script>
     <script type="module" src="main.js" defer></script>
-    <script type="module" src="news.js" defer></script>
+    <script type="module" src="article.js" defer></script>
+    <script type="module" src="feed.js" defer></script>
   </head>
   <body>
     <header id="vision">
@@ -31,13 +32,13 @@
       <div id="views">
         
         <div id="home-view" class="view">
-          <p>Ah, what do he know?</p>
+          <h2>Welcome!</h2>
         </div>
 
         <div id="map-view" class="view" style="display:none">
-          <p>About the buttery flow.</p>
+          <h2>Click on a state to learn more.</h2>
           <div class="image">
-            <img usemap="#us-map" src="./us.png">
+            <img usemap="#us-map" src="./media/us.png">
             <map name="us-map">
               <!-- Before areaing, decide if cropping map -->
               <area shape="poly" coords="384,230,488,237,486,316,375,309">
@@ -53,15 +54,15 @@
         
 
         <div id="forum-view" class="view" style="display:none">
-          <p>Trippin'.</p>
+          <h2>Talk! (Be respectful)</h2>
           <label for="comment">Say something: </label><input type="text" id="comment" />
-          <div>
+          <div id="comment-holder">
             
           </div>
         </div>
 
         <div id="resources-view" class="view" style="display:none">
-          <p>To date the Metal Fellow been rippin' flows.</p>
+          <h2>Learn more about trans issues.</h2>
         </div>
       </div>
 
@@ -69,10 +70,13 @@
         <button id="positive">Positive</button>
         <button id="neutral">Neutral</button>
         <button id="negative">Negative</button>
-        <label for="load-filter">Load custom filter: </label><input type="text" id="load-filter" />
-        <button id="load-button">Load</button>
-        <label for="new-filter">New custom filter: </label><input type="text" id="new-filter" />
+        <label for="feed-name">Feed name: </label><input type="text" id="feed-name" />
         <button id="new-button">Create</button>
+        <button id="load-button">Load</button>
+        <button id="delete-button">Delete</button>
+        <label for="source-name">Source name: </label><input type="text" id="source-name" />
+        <button id="add-button">Add</button>
+        <button id="remove-button">Remove</button>
       </div>
 
     </main>
