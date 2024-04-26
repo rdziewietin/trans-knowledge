@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Title</title>
+    <title>TransKnowledge</title>
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="styles.css">
     <!-- JavaScript Files -->
+    <script src="//cdn.jsdelivr.net/npm/pouchdb@8.0.1/dist/pouchdb.min.js"></script>
     <script type="module" src="views.js" defer></script>
     <script type="module" src="main.js" defer></script>
     <script type="module" src="article.js" defer></script>
@@ -32,39 +33,49 @@
         
         <div id="home-view" class="view">
           <h2>Welcome!</h2>
+          <p>Welcome to TransKnowledge, a web application designed from the ground up to give transgender people the information they need.</p>
+          <p>Click on any of the buttons above to go to one of the four applications.</p>
+          <p>Map has a map of the United States, along with the current climate of trans laws in each state (detailed information will be added in the full release). News contains several curated news feeds for trans issues, along with the ability to make your own. Forum has an anonymous forum for asking questions. Resources contains an up-to-date list of trustworthy and moderated resources for trans people, along with the ability to send in your own to be moderated.</p>
         </div>
+
 
         <div id="map-view" class="view" style="display:none">
           <h2>Click on a state to learn more.</h2>
           <div class="image">
             <img usemap="#us-map" src="./media/us.png">
-            <map name="us-map">
-              <!-- Before areaing, decide if cropping map -->
-              <area shape="poly" coords="384,230,488,237,486,316,375,309">
+            <map id="trans-map" name="us-map">
             </map>
           </div>
         </div>
 
+        
         <div id="news-view" class="view" style="display:none">
           <h2 id="news-header">Select news </h2>
           <div id="news-holder"></div>
         </div>
 
         
-
         <div id="forum-view" class="view" style="display:none">
-          <h2>Talk! (Be respectful)</h2>
+          <h2 id="forum-header">Talk! (Be respectful)</h2>
           <label for="comment">Say something: </label><input type="text" id="comment" />
-          <div id="comment-holder">
-            
+          <button id="comment-button">Send</button>
+          <div id="comment-holder"> 
           </div>
         </div>
 
+
         <div id="resources-view" class="view" style="display:none">
-          <h2>Learn more about trans issues.</h2>
+          <h2 id="resources-header">Learn more about trans issues.</h2>
+          <div id="resources-holder">
+          </div>
         </div>
       </div>
 
+      <div id="map-sidebar" class="sidebar">
+        
+      </div>
+
+      <!-- Sidebars for necessary pages -->
       <div id="news-sidebar" class="sidebar">
         <button id="positive">Positive</button>
         <button id="neutral">Neutral</button>
@@ -73,9 +84,16 @@
         <button id="new-button">Create</button>
         <button id="load-button">Load</button>
         <button id="delete-button">Delete</button>
-        <label for="source-name">Source name: </label><input type="text" id="source-name" />
+        <label for="source-name">Source url: </label><input type="text" id="source-name" />
         <button id="add-button">Add</button>
-        <button id="remove-button">Remove</button>
+      </div>
+
+      <div id="resources-sidebar" class="sidebar">
+        <div id="resources-sidebar-links">
+
+        </div>
+        <label for="resource-name">Recommend a Resource (url): </label><input type="text" id="resource-name" />
+        <button id="resource-button">Send</button>
       </div>
 
     </main>

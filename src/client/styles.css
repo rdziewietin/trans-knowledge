@@ -24,6 +24,15 @@ main {
   justify-items: center;
 }
 
+button {
+  color: #ffffff;
+  border-color: cornflowerblue;
+  background-color: #55cefd;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 nav {
   margin: 16px auto;
   display: grid;
@@ -34,13 +43,7 @@ nav {
   & > button {
     margin: 12px auto;
     font-size: 20px;
-    color: #ffffff;
-    border-color: cornflowerblue;
-    border-radius: 5px;
-    background-color: #55cefd;
     padding: 10px 20px;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
   }
   & > button:hover {
     background-color: #55B6FD;
@@ -154,9 +157,47 @@ area {
   }
 }
 
-.news-article{
+.news-article {
+  /* outline: solid thin #f6aab7; */
   padding: 8px;
   & > p {
     padding: 0;
+  }
+}
+
+#comment-holder {
+  display: grid;
+  grid-template-columns: 45%;
+  justify-content: center;
+}
+
+.user-content {
+  outline: solid thin #f6aab7;
+  padding: 8px;
+  /* max-width: 45%; */
+  margin: 16px;
+  & > p {
+    padding: 0;
+  }
+}
+
+.resource-sidebar {
+  outline: solid thin #f6aab7;
+  padding: 8px;
+  /* max-width: 45%; */
+  margin: 16px;
+  /* max-height: 16px; */
+}
+
+.comment-options {
+  display: flex;
+  /* max-height: 16px; */
+  justify-content: space-between;
+  align-items: center;
+  & > p {
+    font-size: 11px;
+  }
+  & > button {
+    max-height: 24px;
   }
 }
