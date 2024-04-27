@@ -1,7 +1,7 @@
 // Only used for the JDOC objects
-import { Article } from "./article";
-import { Comment } from "./comments";
-import { Resource } from "./resources";
+// import { Article } from "./article";
+// import { Comment } from "./comments";
+// import { Resource } from "./resources";
 
 // Creating the database
 const dbFeed = new PouchDB("feeds");
