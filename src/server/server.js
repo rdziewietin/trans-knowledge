@@ -45,7 +45,10 @@ import * as url from "url";
 import * as db from "./db.js";
 import * as fsp from "fs/promises";
 
-const headerFields = { "Content-Type": "text/html", "Access-Control-Allow-Origin": "http://Localhost:3000" };
+const headerFields = {
+  "Content-Type": "text/html",
+  "Access-Control-Allow-Origin": "http://Localhost:3000",
+};
 
 /**
  * Asynchronously creates a counter with the specified name. If the name is not
@@ -287,9 +290,7 @@ async function basicServer(request, response) {
   ) {
     sendStaticFile("/client" + request.url);
     return;
-  }
-
-  else {
+  } else {
     response.writeHead(405, { "Content-Type": "text/plain" });
     response.write("Method Not Allowed");
     response.end();

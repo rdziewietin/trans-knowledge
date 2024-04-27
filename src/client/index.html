@@ -20,83 +20,97 @@
 
     <nav>
       <!-- Links to different sections/pages -->
-      <button id="home">Home</button>
-      <button id="map">Map</button>
-      <button id="news">News</button>
-      <button id="forum">Forum</button>
-      <button id="resources">Resources</button>
+      <button id="home" type="button">Home</button>
+      <button id="map" type="button">Map</button>
+      <button id="news" type="button">News</button>
+      <button id="forum" type="button">Forum</button>
+      <button id="presources" type="button">Resources</button>
     </nav>
 
     <main>
-      <!-- Main content of the document -->   
+      <!-- Main content of the document -->
       <div id="views">
-        
+        <!-- Home page -->
         <div id="home-view" class="view">
           <h2>Welcome!</h2>
-          <p>Welcome to TransKnowledge, a web application designed from the ground up to give transgender people the information they need.</p>
-          <p>Click on any of the buttons above to go to one of the four applications.</p>
-          <p>Map has a map of the United States, along with the current climate of trans laws in each state (detailed information will be added in the full release). News contains several curated news feeds for trans issues, along with the ability to make your own. Forum has an anonymous forum for asking questions. Resources contains an up-to-date list of trustworthy and moderated resources for trans people, along with the ability to send in your own to be moderated.</p>
+          <p>
+            Welcome to TransKnowledge, a web application designed from the
+            ground up to give transgender people the information they need.
+          </p>
+          <p>
+            Click on any of the buttons above to go to one of the four
+            applications.
+          </p>
+          <p>
+            Map has a map of the United States, along with the current climate
+            of trans laws in each state (detailed information will be added in
+            the full release). News contains several curated news feeds for
+            trans issues, along with the ability to make your own. Forum has an
+            anonymous forum for asking questions. Resources contains an
+            up-to-date list of trustworthy and moderated resources for trans
+            people, along with the ability to send in your own to be moderated.
+          </p>
         </div>
 
-
-        <div id="map-view" class="view" style="display:none">
+        <!-- Map page -->
+        <div id="map-view" class="view" style="display: none">
           <h2>Click on a state to learn more.</h2>
+          <!-- Map, areas filled in w/JS -->
           <div class="image">
             <img usemap="#us-map" src="./media/us.png">
-            <map id="trans-map" name="us-map">
-            </map>
+            <map id="us-map" name="us-map"> </map>
           </div>
         </div>
 
-        
-        <div id="news-view" class="view" style="display:none">
-          <h2 id="news-header">Select news </h2>
+        <!-- News page -->
+        <div id="news-view" class="view" style="display: none">
+          <h2 id="news-header">Select news</h2>
           <div id="news-holder"></div>
         </div>
 
-        
-        <div id="forum-view" class="view" style="display:none">
+        <!-- Forum page -->
+        <div id="forum-view" class="view" style="display: none">
           <h2 id="forum-header">Talk! (Be respectful)</h2>
-          <label for="comment">Say something: </label><input type="text" id="comment" />
-          <button id="comment-button">Send</button>
-          <div id="comment-holder"> 
-          </div>
+          <label for="comment">Say something: </label>
+          <input type="text" id="comment">
+          <button id="comment-button" type="button">Send</button>
+          <div id="comment-holder"></div>
         </div>
 
-
-        <div id="resources-view" class="view" style="display:none">
+        <!-- Resources page -->
+        <div id="resources-view" class="view" style="display: none">
           <h2 id="resources-header">Learn more about trans issues.</h2>
-          <div id="resources-holder">
-          </div>
+          <div id="resources-holder"></div>
         </div>
       </div>
 
-      <div id="map-sidebar" class="sidebar">
-        
-      </div>
-
+      
       <!-- Sidebars for necessary pages -->
+      <!-- Map sidebar, filled in when clicked -->
+      <div id="map-sidebar" class="sidebar"></div>
+
+      <!-- News sidebar -->
       <div id="news-sidebar" class="sidebar">
-        <button id="positive">Positive</button>
-        <button id="neutral">Neutral</button>
-        <button id="negative">Negative</button>
-        <label for="feed-name">Feed name: </label><input type="text" id="feed-name" />
-        <button id="new-button">Create</button>
-        <button id="load-button">Load</button>
-        <button id="delete-button">Delete</button>
-        <label for="source-name">Source url: </label><input type="text" id="source-name" />
-        <button id="add-button">Add</button>
+        <button id="positive" type="button">Positive</button>
+        <button id="neutral" type="button">Neutral</button>
+        <button id="negative" type="button">Negative</button>
+        <label for="feed-name">Feed name: </label>
+        <input type="text" id="feed-name">
+        <button id="new-button" type="button">Create</button>
+        <button id="load-button" type="button">Load</button>
+        <button id="delete-button" type="button">Delete</button>
+        <label for="source-name">Source url: </label>
+        <input type="text" id="source-name">
+        <button id="add-button" type="button">Add</button>
       </div>
 
+      <!-- Resources sidebar -->
       <div id="resources-sidebar" class="sidebar">
-        <div id="resources-sidebar-links">
-
-        </div>
-        <label for="resource-name">Recommend a Resource (url): </label><input type="text" id="resource-name" />
-        <button id="resource-button">Send</button>
+        <div id="resources-sidebar-links"></div>
+        <label for="resource-name">Recommend a Resource (url): </label
+        ><input type="text" id="resource-name">
+        <button id="resource-button" type="button">Send</button>
       </div>
-
     </main>
-
   </body>
 </html>
