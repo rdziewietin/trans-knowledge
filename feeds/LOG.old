@@ -1,5 +1,5 @@
-2024/05/12-23:13:20.381 2ca4 Recovering log #84
-2024/05/12-23:13:20.381 2ca4 Level-0 table #86: started
-2024/05/12-23:13:20.384 2ca4 Level-0 table #86: 237 bytes OK
-2024/05/12-23:13:20.389 2ca4 Delete type=0 #84
-2024/05/12-23:13:20.389 2ca4 Delete type=3 #82
+2024/05/13-08:45:27.029 3fcc Recovering log #138
+2024/05/13-08:45:27.030 3fcc Level-0 table #140: started
+2024/05/13-08:45:27.033 3fcc Level-0 table #140: 237 bytes OK
+2024/05/13-08:45:27.038 3fcc Delete type=0 #138
+2024/05/13-08:45:27.038 3fcc Delete type=3 #136

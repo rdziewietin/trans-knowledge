@@ -1,5 +1,6 @@
 import * as db from "./db.js";
 import express from "express";
+import * as test from "./testData.js"
 
 const headerFields = { "Content-Type": "text/plain" };
 
@@ -17,15 +18,18 @@ const headerFields = { "Content-Type": "text/plain" };
  */
 async function createDoc(response, doc) {
     try {
-        await db.saveDoc(doc);
+        const result = await db.saveDoc(doc);
+        if (result === null){
+            throw new Error();
+        }
         response.writeHead(200, headerFields);
         response.write(`Doc Created`);
         response.end();
     } catch (err) {
         response.writeHead(500, headerFields);
-        response.write("<h1>Internal Server Error</h1>");
-        response.write("<p>Unable to create counter</p>");
-        response.write(`<p>This is likely a duplicate counter name!</p>`);
+        response.write("Internal Server Error");
+        response.write("Unable to create counter");
+        response.write(`This is likely a duplicate counter name!`);
         response.end();
     }
 }
@@ -52,11 +56,11 @@ async function createDoc(response, doc) {
         throw new Error();
       }
       response.writeHead(200, { "Content-Type": "application/json" });
-      response.write(doc);
+      response.write(JSON.stringify(doc));
       response.end();
     } catch (err) {
       response.writeHead(404, headerFields);
-      response.write(`<h1>Counter ${name} Not Found</h1>`);
+      response.write(`Doc ${name} Not Found`);
       response.end();
     }
   }
@@ -82,11 +86,11 @@ async function createDoc(response, doc) {
     try {
       await db.modifyDoc(name, doc);
       response.writeHead(200, headerFields);
-      response.write(`<h1>Counter Updated</h1>`);
+      response.write(`Doc Updated`);
       response.end();
     } catch (err) {
       response.writeHead(404, headerFields);
-      response.write(`<h1>Counter ${name} Not Found</h1>`);
+      response.write(`Counter ${name} Not Found`);
       response.end();
     }
   }
@@ -115,17 +119,19 @@ async function createDoc(response, doc) {
   async function deleteDoc(response, name) {
     try {
       response.writeHead(200, headerFields);
-      response.write(`<h1>Counter Deleted</h1>`);
+      response.write(`Counter Deleted`);
       response.end();
       db.removeDoc(name);
     } catch (err) {
       response.writeHead(404, headerFields);
-      response.write(`<h1>Counter ${name} Not Found</h1>`);
+      response.write(`Counter ${name} Not Found`);
       response.end();
     }
   }
 
-
+test.createTestArticles();
+test.createTestComments();
+test.createTestResources();
 
 // check ExpressJS documentation at https://expressjs.com/en/5x/api.html#app
 const app = express();
@@ -165,8 +171,8 @@ app
 app
   .route("/create")
   .post(async (request, response) => {
-    const options = request.query;
-    createDoc(response, options.doc);
+    const doc = request.body;
+    createDoc(response, doc);
   })
   .all(MethodNotAllowedHandler);
 
@@ -174,7 +180,8 @@ app
   .route("/update")
   .put(async (request, response) => {
     const options = request.query;
-    updateDoc(response, options.name, options.doc);
+    const doc = request.body;
+    updateDoc(response, options.name, doc);
   })
   .all(MethodNotAllowedHandler);
 
@@ -193,4 +200,5 @@ app.route("*").all(async (request, response) => {
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
+//   require('child_process').exec('start http://localhost:3000')
 });
