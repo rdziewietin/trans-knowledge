@@ -6,6 +6,8 @@ import * as comments from "./comments.js";
 import * as db from "./db.js";
 import { areas, stateNames, stateQuality } from "./map.js";
 
+
+
 // Test articles
 const posArticles = [];
 const neutArticles = [];
@@ -117,6 +119,8 @@ if ((await db.loadDoc("testResources")) === null) {
   db.saveDoc(doc);
 }
 
+
+
 // Functions for rendering data onto the webpage
 /**
   * Renders all the articles in the PouchDB database
@@ -125,7 +129,8 @@ if ((await db.loadDoc("testResources")) === null) {
   * @param {HTMLElement} container - The parent HTML element of the articles.
   */
 async function renderAllArticles(feed, container) {
-  const loadedFeed = await db.loadDoc(feed);
+  const response = await fetch(`${URL}/read?name=${feed}`, { method: "GET" });
+  const loadedFeed = await response.text();
   document.getElementById("news-header").innerText = feed;
   container.innerHTML = "";
   for (let article in loadedFeed.contents) {

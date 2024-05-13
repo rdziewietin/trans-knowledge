@@ -30,11 +30,13 @@
     "test": "",
     "milestone-01": "http-server src/docs/milestone-01 -p 3000 -c-1 -o -s",
     "milestone-02": "http-server src/client -p 3000 -c-1 -o -s",
+    "start": "node src/server/server.js",
     "validate-html": "html-validate src/**/*.html",
     "validate": "html-validate src/**/*.html",
     "prettier": "prettier src --write"
   },
   "devDependencies": {
+    "express": "^4.19.2",
     "html-validate": "^8.18.1",
     "http-server": "^14.1.1",
     "pouchdb": "^8.0.1",

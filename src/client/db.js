@@ -2,6 +2,8 @@
 // import { Article } from "./article";
 // import { Comment } from "./comments";
 // import { Resource } from "./resources";
+// import PouchDB from "pouchdb";
+// var PouchDB = require('pouchdb');
 
 // Creating the database
 const dbFeed = new PouchDB("feeds");
