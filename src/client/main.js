@@ -139,18 +139,21 @@ async function renderAllArticles(feed, container) {
   container.innerHTML = "";
   fetch(`${URL}/read?name=${feed}`, { method: "GET" })
   .then(function(response){
+    console.log(response);
     response.json();
+    console.log(response);
   })
   .then(function(loadedFeed){
+    console.log(loadedFeed);
     document.getElementById("news-header").innerText = feed;
-  for (let article in loadedFeed.contents) {
-    const jsonArticle = loadedFeed.contents[article];
-    const currArticle = new news.Article(
-      jsonArticle.source,
-      jsonArticle.headline,
-      jsonArticle.summary,
-      jsonArticle.link,
-    );
+    for (let article in loadedFeed.contents) {
+      const jsonArticle = loadedFeed.contents[article];
+      const currArticle = new news.Article(
+        jsonArticle.source,
+        jsonArticle.headline,
+        jsonArticle.summary,
+        jsonArticle.link,
+      );
     currArticle.render(container);
   }
   })
