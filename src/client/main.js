@@ -119,6 +119,13 @@ const URL = "http://localhost:3000";
 //   db.saveDoc(doc);
 // }
 
+// Error management
+function manageErrors(response){
+  if (!response.ok){
+    throw Error(response.statusText);
+  }
+  return response;
+}
 
 
 // Functions for rendering data onto the webpage
@@ -129,11 +136,13 @@ const URL = "http://localhost:3000";
   * @param {HTMLElement} container - The parent HTML element of the articles.
   */
 async function renderAllArticles(feed, container) {
-  const response = await fetch(`${URL}/read?name=${feed}`, { method: "GET" });
-  const loadedFeed = await response.json();
-  console.log(loadedFeed);
-  document.getElementById("news-header").innerText = feed;
   container.innerHTML = "";
+  fetch(`${URL}/read?name=${feed}`, { method: "GET" })
+  .then(function(response){
+    response.json();
+  })
+  .then(function(loadedFeed){
+    document.getElementById("news-header").innerText = feed;
   for (let article in loadedFeed.contents) {
     const jsonArticle = loadedFeed.contents[article];
     const currArticle = new news.Article(
@@ -144,6 +153,10 @@ async function renderAllArticles(feed, container) {
     );
     currArticle.render(container);
   }
+  })
+  .catch(function(){
+    
+  });
 }
 
 /**
@@ -313,30 +326,42 @@ document
 // Creates a feed
 // Next four follow the same pattern of check/change database, update HTML elements 
 document.getElementById("new-button").addEventListener("click", async () => {
+  if (feedName.value === "") {
+    document.getElementById("news-header").innerText = "Feed name blank!";
+    newsHolder.innerHTML = "";
+    return;
+  }
   const doc = {
     _id: feedName.value,
     contents: [],
   };
-  const response = await db.saveDoc(doc);
-  if (response === null) {
-      // Checking for text input errors
-    if (feedName.value === "") {
-      document.getElementById("news-header").innerText = "Feed name blank!";
-    } else {
-      document.getElementById("news-header").innerText = "Already exists!";
-    }
-    newsHolder.innerHTML = "";
-  } else {
+  fetch(`${URL}/create`, { 
+    method: "POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(doc)
+  })
+  .then(manageErrors)
+  .then(function(){
     document.getElementById("news-header").innerText = "Created!";
     newsHolder.innerHTML = "";
-  }
+  })
+  .catch(function(){
+    document.getElementById("news-header").innerText = "Already exists!";
+    newsHolder.innerHTML = "";
+  });
 });
 
 document.getElementById("load-button").addEventListener("click", async () => {
   const feed = feedName.value;
-  const response = await fetch(`${URL}/read?name=${feed}`, { method: "GET" });
-  const doc = response.body;
-  if (doc === null) {
+  fetch(`${URL}/read?name=${feed}`, { method: "GET" })
+  .then(manageErrors)
+  .then(function(){
+    document.getElementById("news-header").innerText = feedName.value;
+    renderAllArticles(feedName.value, newsHolder);
+  }).catch(function(){
     // Checking for text input errors
     if (feedName.value === "") {
       document.getElementById("news-header").innerText = "Feed name blank!";
@@ -344,10 +369,7 @@ document.getElementById("load-button").addEventListener("click", async () => {
       document.getElementById("news-header").innerText = "Feed not found!";
     }
     newsHolder.innerHTML = "";
-  } else {
-    document.getElementById("news-header").innerText = feedName.value;
-    renderAllArticles(feedName.value, newsHolder);
-  }
+  });
 });
 
 document.getElementById("add-button").addEventListener("click", () => {
@@ -376,14 +398,20 @@ document.getElementById("add-button").addEventListener("click", () => {
 
 // Deleting a feed
 document.getElementById("delete-button").addEventListener("click", () => {
-  db.removeDoc(feedName.value);
-  // Checking for text input errors
-  if (feedName.value === "") {
-    document.getElementById("news-header").innerText = "Feed name blank!";
-  } else {
-    document.getElementById("news-header").innerText = "Feed deleted!";
-  }
-  newsHolder.innerHTML = "";
+  const feed = feedName.value;
+  fetch(`${URL}/delete?name=${feed}`, { method: "DELETE" })
+  .then(manageErrors)
+  .then(function(){
+    document.getElementById("news-header").innerText = feedName.value;
+  }).catch(function(){
+    // Checking for text input errors
+    if (feedName.value === "") {
+      document.getElementById("news-header").innerText = "Feed name blank!";
+    } else {
+      document.getElementById("news-header").innerText = "Feed not found!";
+    }
+    newsHolder.innerHTML = "";
+  });
 });
 
 

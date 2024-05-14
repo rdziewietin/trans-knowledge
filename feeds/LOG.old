@@ -1,5 +1,5 @@
-2024/05/13-08:45:27.029 3fcc Recovering log #138
-2024/05/13-08:45:27.030 3fcc Level-0 table #140: started
-2024/05/13-08:45:27.033 3fcc Level-0 table #140: 237 bytes OK
-2024/05/13-08:45:27.038 3fcc Delete type=0 #138
-2024/05/13-08:45:27.038 3fcc Delete type=3 #136
+2024/05/13-08:47:23.864 9300 Recovering log #141
+2024/05/13-08:47:23.864 9300 Level-0 table #143: started
+2024/05/13-08:47:23.867 9300 Level-0 table #143: 237 bytes OK
+2024/05/13-08:47:23.871 9300 Delete type=0 #141
+2024/05/13-08:47:23.871 9300 Delete type=3 #139
