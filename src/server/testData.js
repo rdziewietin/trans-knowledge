@@ -27,9 +27,9 @@ export async function createTestArticles(){
     );
     posArticles.push(newsPosTest2);
 
-    if ((await db.loadDoc("Positive")) === null) {
+    if ((await db.loadDoc("Positive-feed")) === null) {
         const doc = {
-        _id: "Positive",
+        _id: "Positive-feed",
         contents: posArticles,
         };
         db.saveDoc(doc);
@@ -44,9 +44,9 @@ export async function createTestArticles(){
       neutArticles.push(newsNeutTest);
       
       // Saving articles to database
-      if ((await db.loadDoc("Neutral")) === null) {
+      if ((await db.loadDoc("Neutral-feed")) === null) {
         const doc = {
-          _id: "Neutral",
+          _id: "Neutral-feed",
           contents: neutArticles,
         };
         db.saveDoc(doc);
@@ -61,9 +61,9 @@ export async function createTestArticles(){
       negArticles.push(newsNegTest);
       
       // Saving articles to database
-      if ((await db.loadDoc("Negative")) === null) {
+      if ((await db.loadDoc("Negative-feed")) === null) {
         const doc = {
-          _id: "Negative",
+          _id: "Negative-feed",
           contents: negArticles,
         };
         db.saveDoc(doc);
@@ -103,8 +103,17 @@ export async function createTestResources(){
     // Test resources
     const allResources = [];
 
-    const resourceCategoryTest = new resources.Resource("Trans Clinics", "default");
+    const resourceCategoryTest = new resources.Resource(
+    "Trans Clinics", 
+    "default"
+    );
     allResources.push(resourceCategoryTest);
+
+    const resourceCategoryTest2 = new resources.Resource(
+      "Voice Training", 
+      "default"
+      );
+      allResources.push(resourceCategoryTest2);
 
     const resourceLinkTest = new resources.Resource(
     "Transhealth",
@@ -112,6 +121,27 @@ export async function createTestResources(){
     "https://transhealth.com",
     );
     allResources.push(resourceLinkTest);
+
+    const resourceLinkTest2 = new resources.Resource(
+      "Planned Parenthood",
+      "Trans Clinics",
+      "https://plannedparenthood.org",
+      );
+      allResources.push(resourceLinkTest2);
+
+    const resourceLinkTest3 = new resources.Resource(
+      "GenderGP",
+      "Voice Training",
+      "https://www.gendergp.com/hrt-and-your-voice/",
+      );
+      allResources.push(resourceLinkTest3);
+
+    const resourceLinkTest4 = new resources.Resource(
+      "Cleveland Clinic",
+      "Voice Training",
+      "https://my.clevelandclinic.org/health/treatments/24510-transgender-voice-therapy",
+      );
+      allResources.push(resourceLinkTest4);
 
     // Saving resources to database
     if ((await db.loadDoc("testResources")) === null) {

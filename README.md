@@ -63,9 +63,13 @@ The only prerequisite is NPM.
 <!-- LAYOUT -->
 ## Layout
 
-Internally, the src folder contains all the work done on this project, with the client folder being milestone-02. The media folder contains the (so far) only image file used in the project, a US map. Each of the other files make up the code. index.html is the sole HTML file, styles.css is the custom CSS, and main.js is the primary JavaScript file run to provide interactivity. Most of the other .js files are classes, with the exception of map.js, which contains maps and lists used to provide <area> information for the US map.
+Internally, the src folder contains all the work done on this project, with the client folder being the client-side work (i.e. milestone 2) and the server folder being server-side work (milestone 3). 
 
-The docs folder contains milestone-01 information and server contains the beginnings of work for milestone-03. They do not provide any functionality to TransKnowledge at this time.
+In client, the media folder contains the only image file used in the project, a US map. Each of the other files make up the code. index.html is the sole HTML file, styles.css is the custom CSS, and main.js is the primary JavaScript file run to provide interactivity. Most of the other .js files are classes, with the exception of map.js, which contains maps and lists used to provide <area> information for the US map.
+
+In server, testData.js contains all of the mock data used for the program, server.js contains the code to run the server, and db.js contains the PouchDB methods.
+
+The docs folder contains milestone-01 information. It does not provide any functionality to TransKnowledge at this time.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

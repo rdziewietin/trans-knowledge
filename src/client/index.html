@@ -28,6 +28,17 @@
     </nav>
 
     <main>
+      <!-- Map routing sidebar, goes on left  -->
+      <div id="map-sidebar2" class="sidebar">
+        <label for="route-name">Route Name:</label>
+        <input type="text" id="route-name">
+        <button id="route-button" type="button">Load previous route</button>
+        <p>Current Route:</p>
+        <div id="route"></div>
+        <button id="check-button" type="button">Check and save route</button>
+        <div id="route-warnings"></div>
+      </div>
+
       <!-- Main content of the document -->
       <div id="views">
         <!-- Home page -->
@@ -54,7 +65,7 @@
 
         <!-- Map page -->
         <div id="map-view" class="view" style="display: none">
-          <h2>Click on a state to learn more.</h2>
+          <h2 id="map-header">Click on a state to learn more.</h2>
           <!-- Map, areas filled in w/JS -->
           <div class="image">
             <img usemap="#us-map" src="./media/us.png">
@@ -86,8 +97,13 @@
 
       
       <!-- Sidebars for necessary pages -->
+      
       <!-- Map sidebar, filled in when clicked -->
-      <div id="map-sidebar" class="sidebar"></div>
+      <div id="map-sidebar" class="sidebar">
+      </div>
+      
+
+      
 
       <!-- News sidebar -->
       <div id="news-sidebar" class="sidebar">
@@ -107,8 +123,10 @@
       <!-- Resources sidebar -->
       <div id="resources-sidebar" class="sidebar">
         <div id="resources-sidebar-links"></div>
-        <label for="resource-name">Recommend a Resource (url): </label
-        ><input type="text" id="resource-name">
+        <label for="resource-name">Recommend a Resource (url): </label>
+        <input type="text" id="resource-name">
+        <label for="resource-type">Type of Resource? </label>
+        <input type="text" id="resource-type">
         <button id="resource-button" type="button">Send</button>
       </div>
     </main>

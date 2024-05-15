@@ -15,6 +15,9 @@ export function load(viewId) {
   });
 
   // Show the requested view
+  if (document.getElementById(viewId + "-sidebar2") !== null) {
+    document.getElementById(viewId + "-sidebar2").style.display = "grid";
+  }
   document.getElementById(viewId + "-view").style.display = "block";
   if (document.getElementById(viewId + "-sidebar") !== null) {
     document.getElementById(viewId + "-sidebar").style.display = "grid";

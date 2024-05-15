@@ -6,7 +6,7 @@
 // var PouchDB = require('pouchdb');
 
 // Creating the database
-const dbFeed = new PouchDB("feeds");
+const dbFeed = new PouchDB("routes");
 
  /**
   * Saves a document to the database.
@@ -30,7 +30,7 @@ export async function saveDoc(doc) {
   * Modifies a document in the database.
   * @function
   * @param {string} doc - The ID of the document to be modified. 
-  * @param {Article|Comment|Resource} addition - What is being added to the document.
+  * @param {String} addition - What is being added to the document.
   */
 export async function modifyDoc(name, addition) {
   try {

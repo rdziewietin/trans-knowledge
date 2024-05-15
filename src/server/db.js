@@ -15,10 +15,7 @@ const dbFeed = new PouchDB("feeds");
   */
 export async function saveDoc(doc) {
   try {
-    if ((await loadDoc(doc._id)) !== null) {
-      throw new Error("Database already exists");
-    }
-    const response = await dbFeed.put(doc);
+    await dbFeed.put(doc);
   } catch (error) {
     console.error(error);
     return null;

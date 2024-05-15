@@ -104,6 +104,20 @@ figcaption {
   }
 }
 
+#route {
+  & > p {
+    margin: 2px;
+    padding: 0px;
+  }
+}
+
+#map-sidebar2 {
+  & > p {
+    margin: 0px;
+    padding: 16px;
+  }
+}
+
 .tab:hover {
   background-color: #dddddd;
 }
@@ -156,6 +170,7 @@ area {
   /* width: 55%; */
   & > button {
     margin: 8px;
+    max-height: 50px;
   }
 }
 
@@ -201,5 +216,17 @@ area {
   }
   & > button {
     max-height: 24px;
+  }
+}
+
+input {
+  max-height: 16px;
+}
+
+#route-warnings {
+  & > p {
+    & > strong {
+      color: red;
+    }
   }
 }

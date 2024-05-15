@@ -6,120 +6,16 @@ import * as comments from "./comments.js";
 import * as db from "./db.js";
 import { areas, stateNames, stateQuality } from "./map.js";
 
-const URL = "http://localhost:3000";
+const transKnowledgeURL = "http://localhost:3000";
+let resourceTypes = new Set();
+let routeStates = [];
 
-// // Test articles
-// const posArticles = [];
-// const neutArticles = [];
-// const negArticles = [];
-
-// const newsPosTest = new news.Article(
-//   "Slate",
-//   "Trans People Good",
-//   "Trans people deserve to live.",
-//   "https://slate.com",
-// );
-// posArticles.push(newsPosTest);
-// const newsPosTest2 = new news.Article(
-//   "Them",
-//   "Trans People Great!",
-//   "Trans people deserve to be happy!",
-//   "https://them.us",
-// );
-// posArticles.push(newsPosTest2);
-
-// // Saving articles to database
-// if ((await db.loadDoc("Positive")) === null) {
-//   const doc = {
-//     _id: "Positive",
-//     contents: posArticles,
-//   };
-//   db.saveDoc(doc);
-// }
-
-// const newsNeutTest = new news.Article(
-//   "New York Times",
-//   "Trans People Good?",
-//   "Do trans people deserve to live?",
-//   "https://nytimes.com",
-// );
-// neutArticles.push(newsNeutTest);
-
-// // Saving articles to database
-// if ((await db.loadDoc("Neutral")) === null) {
-//   const doc = {
-//     _id: "Neutral",
-//     contents: neutArticles,
-//   };
-//   db.saveDoc(doc);
-// }
-
-// const newsNegTest = new news.Article(
-//   "Fox News",
-//   "Trans People Bad",
-//   "Trans people don't deserve to live.",
-//   "https://foxnews.com",
-// );
-// negArticles.push(newsNegTest);
-
-// // Saving articles to database
-// if ((await db.loadDoc("Negative")) === null) {
-//   const doc = {
-//     _id: "Negative",
-//     contents: negArticles,
-//   };
-//   db.saveDoc(doc);
-// }
-
-// // Test comments
-// const allComments = [];
-
-// const commentTest = new comments.Comment(
-//   "Hi!",
-//   "default",
-//   new Date("April 21, 24 20:01:04 GMT+00:00"),
-// );
-// allComments.push(commentTest);
-
-// const replyTest = new comments.Comment(
-//   "Hi :)",
-//   commentTest.id,
-//   new Date("April 22, 24 13:51:42 GMT+00:00"),
-// );
-// allComments.push(replyTest);
-
-// // Saving comments to database
-// if ((await db.loadDoc("testComments")) === null) {
-//   const doc = {
-//     _id: "testComments",
-//     contents: allComments,
-//   };
-//   db.saveDoc(doc);
-// }
-
-// // Test resources
-// const allResources = [];
-
-// const resourceCategoryTest = new resources.Resource("Trans Clinics", "default");
-// allResources.push(resourceCategoryTest);
-
-// const resourceLinkTest = new resources.Resource(
-//   "Transhealth",
-//   "Trans Clinics",
-//   "https://transhealth.com",
-// );
-// allResources.push(resourceLinkTest);
-
-// // Saving resources to database
-// if ((await db.loadDoc("testResources")) === null) {
-//   const doc = {
-//     _id: "testResources",
-//     contents: allResources,
-//   };
-//   db.saveDoc(doc);
-// }
-
-// Error management
+/**
+  * Manages errors in fetch retrieval
+  * @function
+  * @param {Response} response - The response of a fetch() method.
+  * @throws {Error} - Throws an error if the fetch was unsuccessful
+  */
 function manageErrors(response){
   if (!response.ok){
     throw Error(response.statusText);
@@ -137,14 +33,12 @@ function manageErrors(response){
   */
 async function renderAllArticles(feed, container) {
   container.innerHTML = "";
-  fetch(`${URL}/read?name=${feed}`, { method: "GET" })
+  fetch(`${transKnowledgeURL}/read?name=${feed}-feed`, { method: "GET" })
+  .then(manageErrors)
   .then(function(response){
-    console.log(response);
-    response.json();
-    console.log(response);
+    return response.json();
   })
   .then(function(loadedFeed){
-    console.log(loadedFeed);
     document.getElementById("news-header").innerText = feed;
     for (let article in loadedFeed.contents) {
       const jsonArticle = loadedFeed.contents[article];
@@ -158,7 +52,8 @@ async function renderAllArticles(feed, container) {
   }
   })
   .catch(function(){
-    
+    document.getElementById("news-header").innerText = "Feed not found!";
+    newsHolder.innerHTML = "";
   });
 }
 
@@ -170,7 +65,7 @@ async function renderAllArticles(feed, container) {
   */
 async function renderAllComments(list, container) {
   let map = new Map();
-  const response = await fetch(`${URL}/read?name=${list}`, { method: "GET" });
+  const response = await fetch(`${transKnowledgeURL}/read?name=${list}`, { method: "GET" });
   const loadedFeed = await response.json();
   container.innerHTML = "";
   for (let comment in loadedFeed.contents) {
@@ -205,8 +100,7 @@ async function renderAllComments(list, container) {
   * @param {HTMLElement} container - The parent HTML element of the resources.
   */
 async function renderAllResources(category, container) {
-  // TODO: Check
-  const response = await fetch(`${URL}/read?name=${category}`, { method: "GET" });
+  const response = await fetch(`${transKnowledgeURL}/read?name=testResources`, { method: "GET" });
   const loadedFeed = await response.json();
   container.innerHTML = "";
   resourcesSidebar.innerHTML = "";
@@ -215,6 +109,7 @@ async function renderAllResources(category, container) {
   }
   for (let article in loadedFeed.contents) {
     const jsonResources = loadedFeed.contents[article];
+    resourceTypes.add(jsonResources.category);
     if (
       jsonResources.category === category ||
       jsonResources.category === "default"
@@ -262,14 +157,59 @@ function renderMap(map, container) {
   * @param {HTMLElement} container - The parent HTML element of the state info.
   */
 function loadStateInfo(area, container) {
+  // Immutable information
   container.innerHTML = "";
   const stateName = document.createElement("h2");
   stateName.innerText = stateNames[area.id];
   const stateDesc = document.createElement("p");
   stateDesc.innerText = stateQuality[area.id];
 
+  // The button and its event listener
+  const routeButton = document.createElement("button");
+  routeButton.id = "add-route-button";
+  routeButton.innerText = "Add state to route";
+  routeButton.addEventListener("click", async () => {
+    const routeName = document.getElementById("route-name").value;
+    // Needs a route name before it creates the route
+    if (routeName === ""){
+      document.getElementById("map-header").innerText = "Please enter a route name.";
+      return;
+    }
+    document.getElementById("map-header").innerText = "Click on a state to learn more.";
+
+    routeStates.push(stateName.innerText);
+
+    // Using local data but creates space for server data, less load
+    if (await db.loadDoc(routeName) === null){
+      const doc = {
+        _id: routeName,
+        contents: []
+      }
+      await db.saveDoc(doc);
+      fetch(`${transKnowledgeURL}/create`, { 
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(doc)
+      })
+      .then(manageErrors)
+      .catch(function(){
+        document.getElementById("map-header").innerText = "Network Error";
+      });
+    }
+
+    await db.modifyDoc(routeName, stateName.innerText);
+
+    const newState = document.createElement("p");
+    newState.innerText = stateName.innerText;
+    document.getElementById("route").appendChild(newState);
+  })
+
   container.appendChild(stateName);
   container.appendChild(stateDesc);
+  container.appendChild(routeButton);
 }
 
 
@@ -285,6 +225,7 @@ const forumHeader = document.getElementById("forum-header");
 const resourcesHolder = document.getElementById("resources-holder");
 const resourceName = document.getElementById("resource-name");
 const resourcesHeader = document.getElementById("resources-header");
+const resourceType = document.getElementById("resource-type");
 
 // Changes if the user is replying, default if not
 let reply = "default";
@@ -334,11 +275,16 @@ document.getElementById("new-button").addEventListener("click", async () => {
     newsHolder.innerHTML = "";
     return;
   }
+  if (feedName.value === "testComments" || feedName.value === "testResources") {
+    document.getElementById("news-header").innerText = "Reserved name";
+    newsHolder.innerHTML = "";
+    return;
+  }
   const doc = {
-    _id: feedName.value,
+    _id: feedName.value + "-feed",
     contents: [],
   };
-  fetch(`${URL}/create`, { 
+  fetch(`${transKnowledgeURL}/create`, { 
     method: "POST",
     headers: {
       'Accept': 'application/json',
@@ -359,60 +305,110 @@ document.getElementById("new-button").addEventListener("click", async () => {
 
 document.getElementById("load-button").addEventListener("click", async () => {
   const feed = feedName.value;
-  fetch(`${URL}/read?name=${feed}`, { method: "GET" })
+  if (feed === "") {
+    document.getElementById("news-header").innerText = "Feed name blank!";
+    newsHolder.innerHTML = "";
+    return;
+  } 
+  if (feedName.value === "testComments" || feedName.value === "testResources") {
+    document.getElementById("news-header").innerText = "Not a usable feed";
+    newsHolder.innerHTML = "";
+    return;
+  }
+  fetch(`${transKnowledgeURL}/read?name=${feed}-feed`, { method: "GET" })
   .then(manageErrors)
   .then(function(){
     document.getElementById("news-header").innerText = feedName.value;
     renderAllArticles(feedName.value, newsHolder);
   }).catch(function(){
-    // Checking for text input errors
-    if (feedName.value === "") {
-      document.getElementById("news-header").innerText = "Feed name blank!";
-    } else {
-      document.getElementById("news-header").innerText = "Feed not found!";
-    }
+    document.getElementById("news-header").innerText = "Feed not found!";
     newsHolder.innerHTML = "";
   });
 });
 
 document.getElementById("add-button").addEventListener("click", () => {
-  let source = sourceName.value;
-  // Only necessary for testing, will be replaced with back-end milestone
-  if (!source.startsWith("http://") || !source.startsWith("https://")) {
-    source = "http://" + source;
-  }
-  // Creating the article doc
-  const article = new news.Article(
-    "New Source",
-    "Example Headline",
-    "Will be replaced with API functionality in full release, click to go to source.",
-    source,
-  );
-  db.modifyDoc(feedName.value, article);
   // Checking for text input errors
-  if (feedName.value === "") {
+  const feed = feedName.value;
+  newsHolder.innerHTML = "";
+  if (feed === "") {
     document.getElementById("news-header").innerText = "Feed name blank!";
   } else if (sourceName.value === "") {
     document.getElementById("news-header").innerText = "Source url blank!";
-  } else {
-    document.getElementById("news-header").innerText = "Added!";
   }
+  if (feedName.value === "testComments" || feedName.value === "testResources") {
+    document.getElementById("news-header").innerText = "Cannot add to database";
+    newsHolder.innerHTML = "";
+    return;
+  }
+  if (feedName.value === "Positive" || feedName.value === "Neutral" || feedName.value === "Negative") {
+    document.getElementById("news-header").innerText = "Standard feeds, cannot modify";
+    newsHolder.innerHTML = "";
+    return;
+  }
+  let source = sourceName.value;
+  
+
+  if (!source.startsWith("http://") || !source.startsWith("https://")) {
+    source = "http://" + source;
+  }
+
+  if (!source.includes(".")) {
+    document.getElementById("news-header").innerText = "Cannot detect URL top-level domain";
+    newsHolder.innerHTML = "";
+    return;
+  }
+
+  const currURL = new URL(source);
+
+  // Creating the article doc
+  const article = new news.Article(
+    currURL.hostname,
+    "Example Headline",
+    "Will be replaced with API functionality in full release, click to go to source.",
+    currURL.href,
+  );
+  fetch(`${transKnowledgeURL}/update?name=${feed}-feed`, { 
+    method: "PUT",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(article)
+  })
+  .then(manageErrors)
+  .then(function(){
+    document.getElementById("news-header").innerText = "Added!";
+  }).catch(function(){
+    document.getElementById("news-header").innerText = "Addition failed!";
+  });
 });
 
 // Deleting a feed
 document.getElementById("delete-button").addEventListener("click", () => {
+  // Checking for text input errors
+  if (feedName.value === "") {
+    document.getElementById("news-header").innerText = "Feed name blank!";
+    newsHolder.innerHTML = "";
+    return;
+  }
+  if (feedName.value === "testComments" || feedName.value === "testResources") {
+    document.getElementById("news-header").innerText = "Reserved name";
+    newsHolder.innerHTML = "";
+    return;
+  }
+  if (feedName.value === "Positive" || feedName.value === "Neutral" || feedName.value === "Negative") {
+    document.getElementById("news-header").innerText = "Standard feeds, cannot modify";
+    newsHolder.innerHTML = "";
+    return;
+  }
   const feed = feedName.value;
-  fetch(`${URL}/delete?name=${feed}`, { method: "DELETE" })
+  fetch(`${transKnowledgeURL}/delete?name=${feed}-feed`, { method: "DELETE" })
   .then(manageErrors)
   .then(function(){
-    document.getElementById("news-header").innerText = feedName.value;
+    document.getElementById("news-header").innerText = feedName.value + " Deleted";
+    newsHolder.innerHTML = "";
   }).catch(function(){
-    // Checking for text input errors
-    if (feedName.value === "") {
-      document.getElementById("news-header").innerText = "Feed name blank!";
-    } else {
-      document.getElementById("news-header").innerText = "Feed not found!";
-    }
+    document.getElementById("news-header").innerText = "Feed not found!";
     newsHolder.innerHTML = "";
   });
 });
@@ -421,7 +417,11 @@ document.getElementById("delete-button").addEventListener("click", () => {
 // Forum event listener
 document
   .getElementById("comment-button")
-  .addEventListener("click", async () => {
+  .addEventListener("click", () => {
+    if (commentInput.value === ""){
+      forumHeader.innerText = "Comment cannot be blank!";
+      return;
+    }
     forumHeader.innerText = "Talk! (Be respectful)";
     // Checks if it is a reply, resets in case it is 
     let category = reply;
@@ -433,9 +433,22 @@ document
       new Date(),
     );
     commentInput.value = "";
-    await db.modifyDoc("testComments", comment);
-    // Rerender
-    renderAllComments("testComments", commentHolder);
+    fetch(`${transKnowledgeURL}/update?name=testComments`, { 
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(comment)
+    })
+    .then(manageErrors)
+    .then(function(){
+      // Rerender
+      renderAllComments("testComments", commentHolder);
+    }).catch(function(){
+      // Checking for text input errors
+      forumHeader.innerText = "Comment failed"
+    });
   });
 
 
@@ -443,23 +456,114 @@ document
 document
   .getElementById("resource-button")
   .addEventListener("click", async () => {
+    // Source Checker
     let source = resourceName.value;
-    // Only necessary for testing, will be replaced with back-end milestone
-    if (!source.startsWith("http://") || !source.startsWith("https://")) {
+    if (source === ""){
+      resourcesHeader.innerText = "Input cannot be blank!";
+      return;
+    }
+
+    if (!source.startsWith("http://") && !source.startsWith("https://")) {
       source = "http://" + source;
     }
+
+    if (!resourceTypes.has(resourceType.value)){
+      resourcesHeader.innerText = "Invalid category";
+      return;
+    }
+
+    const currURL = new URL(source);
+
     // Creating the resource to be added.
     const addedResource = new resources.Resource(
-      "Example of added resource",
+      currURL.hostname,
       "Trans Clinics",
-      source,
+      currURL.href,
     );
     resourceName.value = "";
-    await db.modifyDoc("testResources", addedResource);
-    renderAllResources("", resourcesHolder);
-    // Rerender
-    resourcesHeader.innerText = "Thank you!";
+    fetch(`${transKnowledgeURL}/update?name=testResources`, { 
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(addedResource)
+    })
+    .then(manageErrors)
+    .then(function(){
+      resourcesHeader.innerText = "Thank you!";
+      renderAllResources("", resourcesHolder);
+    }).catch(function(){
+      // Checking for text input errors
+      forumHeader.innerText = "Submission failed"
+    });
   });
+
+
+// Map route event listener, which it saves 
+document.getElementById("check-button").addEventListener("click", async () => {
+  const routeName = document.getElementById("route-name").value;
+  if (routeName === ""){
+    document.getElementById("map-header").innerText = "Please enter a route name.";
+    return;
+  }
+  fetch(`${transKnowledgeURL}/update?name=${routeName}`, { 
+    method: "PUT",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(routeStates)
+  })
+  .then(manageErrors)
+  .then(function(){
+    document.getElementById("route-warnings").innerHTML = "";
+    for (let state in routeStates){
+      const stateInitial = Object.keys(stateNames).find(key => stateNames[key] === routeStates[state]);
+      const quality = stateQuality[stateInitial];
+      if (quality === "Bad" || quality == "Terrible"){
+        const warning = document.createElement("p");
+        warning.innerHTML = `${routeStates[state]} has a trans safety rating of <strong>${quality}</strong>.`
+        document.getElementById("route-warnings").appendChild(warning);
+      }
+    }
+  })
+  .catch(function(){
+    document.getElementById("map-header").innerText = "Network Error";
+  });
+})
+
+// Event listener for loading the route
+document.getElementById("route-button").addEventListener("click", () => {
+  const routeName = document.getElementById("route-name").value;
+  if (routeName === ""){
+    document.getElementById("map-header").innerText = "Please enter a route name.";
+    return;
+  }
+  fetch(`${transKnowledgeURL}/read?name=${routeName}`, { method: "GET" })
+  .then(manageErrors)
+  .then(function(response){
+    console.log(response)
+    return response.json();
+  })
+  .then(function(result){
+    console.log(result)
+    if (result.contents !== null){
+      routeStates = result.contents.at(-1);
+    }
+    document.getElementById("route").innerHTML = "";
+    for (let state in routeStates){
+      const newState = document.createElement("p");
+      newState.innerText = routeStates[state];
+      document.getElementById("route").appendChild(newState);
+    }
+  })
+  .catch(function(){
+    // Checking for text input errors
+    document.getElementById("map-header").innerText = "Feed not found!";
+  });
+  
+});
 
 
 // Initialize with the home view

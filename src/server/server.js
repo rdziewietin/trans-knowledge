@@ -1,20 +1,21 @@
 import * as db from "./db.js";
 import express from "express";
-import * as test from "./testData.js"
+import * as test from "./testData.js";
+import open from "open";
 
 const headerFields = { "Content-Type": "text/plain" };
 
 /**
- * Asynchronously creates a counter with the specified name. If the name is not
- * provided, it responds with a 400 status code indicating a bad request.
- * Otherwise, it saves the counter with an initial value of 0 to the database
- * and responds with a 200 status code indicating success.
+ * Creates a document using the database, with the _id field as its name.
+ * The doc is premade by the client. It returns a 409 error if the doc is
+ * already created, which it sends back as a 500 error. Otherwise, it sends
+ * 200. 
  *
  * @async
- * @param {object} response - The HTTP response object used to send back data to
- * the client. It must have `writeHead`, `write`, and `end` methods available.
- * @param {string} [name] - The name of the counter to be created. If not
- * provided, the function will respond with an error message.
+ * @param {object} response - The HTTP response object.
+ * @param {string} doc - The document that will be created.
+ * @throws {Error} - Catches errors both if the response fails and if it
+ * succeeds but happens to be null.
  */
 async function createDoc(response, doc) {
     try {
@@ -23,31 +24,23 @@ async function createDoc(response, doc) {
             throw new Error();
         }
         response.writeHead(200, headerFields);
-        response.write(`Doc Created`);
         response.end();
     } catch (err) {
         response.writeHead(500, headerFields);
-        response.write("Internal Server Error");
-        response.write("Unable to create counter");
-        response.write(`This is likely a duplicate counter name!`);
         response.end();
     }
 }
   
   /**
-   * Asynchronously reads the value of a specified counter by its name. If the
-   * counter is found, it responds with a 200 status code and the counter's value.
-   * If the counter is not found, it catches the error and responds with a 404
-   * status code indicating that the counter could not be found.
+   * Loads a document from the database, then returns a JSON string version
+   * in the response body. If the doc does not exist, it gives a 404 error.
+   * Otherwise, it returns 200.
    *
    * @async
-   * @param {object} response - The HTTP response object used to send data back to
-   * the client. It must support `writeHead`, `write`, and `end` methods.
-   * @param {string} name - The name of the counter to be read. The function
-   * attempts to load a counter with this name from the database.
-   * @throws {Error} - If there is an issue loading the counter (e.g., the counter
-   * does not exist), an error is thrown and caught within the function. The
-   * client is then informed that the counter was not found.
+   * @param {object} response - The HTTP response object.
+   * @param {string} name - The name of the document to be obtained.
+   * @throws {Error} - Catches errors both if the response fails and if it
+   * succeeds but happens to be null.
    */
   async function readDoc(response, name) {
     try {
@@ -60,58 +53,45 @@ async function createDoc(response, doc) {
       response.end();
     } catch (err) {
       response.writeHead(404, headerFields);
-      response.write(`Doc ${name} Not Found`);
       response.end();
     }
   }
   
   /**
-   * Asynchronously updates the value of a specified counter by incrementing its
-   * count by one. It first tries to load the counter from the database using the
-   * provided name. If successful, it increments the counter's value and updates
-   * the database. The client is then informed of the successful update with a 200
-   * status code. If the counter cannot be found, it responds with a 404 status
-   * code, indicating that the counter does not exist.
+   * Updates a specified document using the modifyDoc method. It requires
+   * the name of the document to be retrieved and the updated doc to be saved,
+   * which is created client-side. If the doc does not exist, it returns a 404
+   * error. Otherwise, it returns 200. 
    *
    * @async
-   * @param {object} response - The HTTP response object for sending data back to
-   * the client. It is expected to have `writeHead`, `write`, and `end` methods.
-   * @param {string} name - The name of the counter to be updated. This function
-   * attempts to find and update a counter with this name in the database.
-   * @throws {Error} - If the counter cannot be found or if there is a problem
-   * updating the counter in the database, an error is thrown and caught within
-   * the function. The client is then notified that the counter was not found.
+   * @param {object} response - The HTTP response object.
+   * @param {string} name - The name of the doc to be updated.
+   * @param {string} doc - The updated doc.
+   * @throws {Error} - If the response sends back an error, then it throws
+   * an error.
    */
   async function updateDoc(response, name, doc) {
     try {
       await db.modifyDoc(name, doc);
       response.writeHead(200, headerFields);
-      response.write(`Doc Updated`);
       response.end();
     } catch (err) {
       response.writeHead(404, headerFields);
-      response.write(`Counter ${name} Not Found`);
       response.end();
     }
   }
   
   /**
-   * Asynchronously deletes a specified counter by its name. The function attempts
-   * to find the counter in the database. If found, it sends a confirmation
-   * response to the client that the counter has been deleted, and then proceeds
-   * to remove the counter from the database. If the counter cannot be found, it
-   * responds with a 404 status code, indicating that the counter does not exist.
-   *
-   * It's important to note that the removal from the database happens after
-   * sending the response to the client. This means the client is informed of the
-   * deletion before the deletion process completes in the database.
+   * Deletes a doc from the database using the deleteDoc method. It requires
+   * the name of the document to be submitted in order to find the doc in the
+   * database. While there is a catch for 404 errors that occur during the process,
+   * regardless of whether the doc exists or not, the client will receive a 200 code
+   * (either way, the doc is gone).
+   * 
    *
    * @async
-   * @param {object} response - The HTTP response object for sending back data to
-   * the client. This object must include `writeHead`, `write`, and `end` methods
-   * to properly send the response.
-   * @param {string} name - The name of the counter to be deleted. The function
-   * will search for a counter by this name in the database.
+   * @param {object} response - The HTTP response object.
+   * @param {string} name - The name of the doc to be deleted.
    * @throws {Error} - If there is an issue loading the counter (e.g., the counter
    * does not exist), an error is thrown and caught within the function. The
    * client is then informed that the counter was not found with a 404 response.
@@ -119,46 +99,35 @@ async function createDoc(response, doc) {
   async function deleteDoc(response, name) {
     try {
       response.writeHead(200, headerFields);
-      response.write(`Counter Deleted`);
       response.end();
       db.removeDoc(name);
     } catch (err) {
       response.writeHead(404, headerFields);
-      response.write(`Counter ${name} Not Found`);
       response.end();
     }
   }
 
+// Creating the mock data for this milestone
 test.createTestArticles();
 test.createTestComments();
 test.createTestResources();
 
-// check ExpressJS documentation at https://expressjs.com/en/5x/api.html#app
+// Basic express setup
 const app = express();
 const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// The following code handles static file requests for the client-side code.
-// You do not need to modify this code. It serves the client-side files from
-// the `src/client` directory.
 app.use(express.static("src/client"));
 
-// TASK #3: If the HTTP method is not explicitly defined for a matching route,
-// respond with a 405 status code.
-// Hint: Use the `response.status`, `response.type`  and `response.send` methods to send the
-// appropriate response. Your server must respond with:
-// - A 405 status code (Method Not Allowed)
-// - A content type of 'text/plain'
-// - A response body containing 'Method Not Allowed'
+// A handler that checks to make sure the JS method fits with the HTTP method. 
 const MethodNotAllowedHandler = async (request, response) => {
   response.status(405);
   response.type('text/plain');
   response.send('Method Not Allowed');
 };
 
-// Here is an example of how to handle a GET request to the '/read' path:
-// Use this as a model for handling other methods and paths.
+// Routing using express
 app
   .route("/read")
   .get(async (request, response) => {
@@ -167,7 +136,6 @@ app
   })
   .all(MethodNotAllowedHandler);
 
-// Other routes
 app
   .route("/create")
   .post(async (request, response) => {
@@ -193,12 +161,14 @@ app
   })
   .all(MethodNotAllowedHandler);
 
-// this should always be the last route
+// Otherwise, 404
 app.route("*").all(async (request, response) => {
   response.status(404).send(`Not found: ${request.path}`);
 });
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
-//   require('child_process').exec('start http://localhost:3000')
 });
+
+// Auto-opening in the browser
+await open("http://localhost:3000");
